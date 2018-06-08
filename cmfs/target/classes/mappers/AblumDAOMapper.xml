@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.AblumDAO">
+
+    <insert id="insertAblum" parameterType="Ablum">
+        insert into t_ablum(id,aname,coverImg,`count`,star,author,broadCast,prief,publishDate,url)
+        values(#{id},#{aname},#{coverImg},#{count},#{star},#{author},#{broadCast},#{prief},#{publishDate},#{url})
+    </insert>
+
+
+    <resultMap id="map" type="Ablum">
+        <id column="eid" property="id"/>
+        <result column="eaname" property="aname"/>
+        <result column="ecoverImg" property="coverImg"/>
+        <result column="ecount" property="count"/>
+        <result column="estar" property="star"/>
+        <result column="eauthor" property="author"/>
+        <result column="ebroadCast" property="broadCast"/>
+        <result column="eprief" property="prief"/>
+        <result column="epublishDate" property="publishDate"/>
+        <result column="eurl" property="url"/>
+        <collection property="children" ofType="Capter">
+            <id column="fid" property="id"/>
+            <result column="faname" property="aname"/>
+            <result column="fsize" property="size"/>
+            <result column="fduration" property="duration"/>
+            <result column="fdownPath" property="downPath"/>
+            <result column="fuploadDate" property="uploadDate"/>
+            <result column="fablum_id" property="ablum_id"/>
+        </collection>
+    </resultMap>
+
+
+    <!--  连表查询     -->
+    <select id="selectAblum" parameterType="String" resultMap="map">
+        select e.id eid,e.aname eaname,e.coverImg ecoverImg,e.count ecount,e.star estar,e.author eauthor,e.broadCast ebroadCast,
+            e.prief eprief,e.publishDate epublishDate,e.url eurl,
+            f.id fid,f.aname faname,f.size fsize,f.duration fduration,f.downPath fdownPath,f.uploadDate fuploadDate,f.ablum_id fablum_id
+        from t_ablum e left join t_capter f on e.id=f.ablum_id
+        where e.id= #{id}
+    </select>
+    <!--    查所有的专辑     -->
+    <select id="selectAllAblum"  resultMap="map">
+        select e.id eid,e.aname eaname,e.coverImg ecoverImg,e.count ecount,e.star estar,e.author eauthor,e.broadCast ebroadCast,
+        e.prief eprief,e.publishDate epublishDate,e.url eurl,
+        f.id fid,f.aname faname,f.size fsize,f.duration fduration,f.downPath fdownPath,f.uploadDate fuploadDate,f.ablum_id fablum_id
+        from t_ablum e left join t_capter f on e.id=f.ablum_id
+    </select>
+    <!--  修改专辑的章节数量         -->
+    <update id="updateCount" parameterType="Ablum">
+        update t_ablum set count=#{count} where id=#{id}
+    </update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
