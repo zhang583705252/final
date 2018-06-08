@@ -116,7 +116,6 @@ public class UserServiceImpl implements UserService {
     public List<User> selectAllUser() {
         List<User> us=userDAO.selectAllUser();
         if(us==null)throw new RuntimeException("没有注册的用户");
-
         return us;
     }
 
