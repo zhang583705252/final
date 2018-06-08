@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.MenuDAO">
+    <resultMap id="res" type="Menu">
+        <id column="sid" property="id"/>
+        <result column="stitle" property="title"/>
+        <result column="siconCls" property="iconCls"/>
+        <result column="surl" property="url"/>
+        <collection property="list" ofType="Menu">
+            <id column="tid" property="id"/>
+            <result column="ttitle" property="title"/>
+            <result column="ticonCls" property="iconCls"/>
+            <result column="turl" property="url"/>
+            <result column="tprent_id" property="prent_id"/>
+        </collection>
+
+
+    </resultMap>
+
+
+
+
+    <select id="queryAll"  resultMap="res">
+
+        select  s.id sid,s.title stitle,s.iconCls siconCls,s.url surl,t.id tid,t.title ttitle,t.iconCls ticonCls,t.prent_id tprent_id,t.url turl
+        from(select * from t_menu where prent_id is null)s left join t_menu t on s.id=t.prent_id
+
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

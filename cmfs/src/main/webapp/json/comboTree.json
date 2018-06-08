@@ -1,0 +1,31 @@
+[{
+  "id": "custom",
+  "text": "自动导出",
+  "state": "open",
+  "children": [{
+        "id":"id" ,
+        "text": "编号"
+      },{
+        "id": "phoneNum",
+        "text": "电话号码"
+      },{
+        "id":"username" ,
+        "text": "用户名"
+      },{
+        "id": "password",
+        "text": "密码"
+      },{
+        "id":"province" ,
+        "text": "省份"
+      },{
+        "id": "city",
+        "text": "城市"
+      },{
+        "id":"sex" ,
+        "text": "性别"
+      },{
+        "id": "data",
+        "text": "日期"
+  }]
+
+}]
