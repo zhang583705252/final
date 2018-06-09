@@ -6,6 +6,9 @@
           select * from t_user
           where phoneNum=#{phoneNum}
     </select>
+    <select id="selectAllUser" resultType="User">
+        select * from t_user
+    </select>
     <!--  用户注册       -->
     <insert id="insertUser" parameterType="User">
         insert into t_user(phoneNum,username,password,salt,dharmaName,province,city,sex,sign,headPic,status,

@@ -18,102 +18,110 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.*;
 
 
 @Controller
-@RequestMapping(value="/user")
+@RequestMapping(value = "/user")
 public class UserController {
     @Autowired
     private UserService userService;
+
     //1.用户注册
     @ResponseBody
-    @RequestMapping(value="/regist",method = RequestMethod.POST)
-    public JSONObject  registUser (User user){
+    @RequestMapping(value = "/regist", method = RequestMethod.POST)
+    public JSONObject registUser(User user) {
 
-       JSONObject jsonObject= userService.registUserService(user);
-        return  jsonObject;
+        JSONObject jsonObject = userService.registUserService(user);
+        return jsonObject;
     }
+
     //2.用户登陆
     @ResponseBody
-    @RequestMapping(value="/login",method = RequestMethod.POST)
-    public JSONObject login(User user){
-           JSONObject jsonObject =userService.loginUserService(user);
-           return jsonObject;
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public JSONObject login(User user) {
+        JSONObject jsonObject = userService.loginUserService(user);
+        return jsonObject;
 
     }
 
     //3.用户的修改
     @ResponseBody
-    @RequestMapping(value="/modify")
-    public JSONObject modify(User user){
-        JSONObject jsonObject =userService.updateUserService(user);
+    @RequestMapping(value = "/modify")
+    public JSONObject modify(User user) {
+        JSONObject jsonObject = userService.updateUserService(user);
         return jsonObject;
 
     }
+
     //4.获取验证码的
-        @ResponseBody
-        @RequestMapping(value="/obtain")
-       public JSONObject obtain (String phoneNum) {
-            JedisPoolConfig config = new JedisPoolConfig();
-            //和redis数据库建立连接
-            JedisPool s = new JedisPool(config, "127.0.0.1", 6379);
-            Jedis je = s.getResource();
-            //
-            String code=je.get("code");
-            JSONObject jsonObject=new JSONObject();
-              jsonObject.put("code",code);
-              //设置过期时间
-              je.setex("code",60,code);
-              return jsonObject;
-
-        }
-        //检查验证码
-    public JSONObject check(String phoneNum,String code){
-
-        JedisPool s = new JedisPool(  "127.0.0.1", 6379);
+    @ResponseBody
+    @RequestMapping(value = "/obtain")
+    public JSONObject obtain(String phoneNum) {
+        JedisPoolConfig config = new JedisPoolConfig();
+        //和redis数据库建立连接
+        JedisPool s = new JedisPool(config, "127.0.0.1", 6379);
         Jedis je = s.getResource();
-        String code1=je.get("code");
-        JSONObject jsonObject=new JSONObject();
-        if(code1.equals(code)){
-            jsonObject.put("result","success");
+        //
+        String code = je.get("code");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", code);
+        //设置过期时间
+        je.setex("code", 60, code);
+        return jsonObject;
+
+    }
+
+    //检查验证码
+    public JSONObject check(String phoneNum, String code) {
+
+        JedisPool s = new JedisPool("127.0.0.1", 6379);
+        Jedis je = s.getResource();
+        String code1 = je.get("code");
+        JSONObject jsonObject = new JSONObject();
+        if (code1.equals(code)) {
+            jsonObject.put("result", "success");
             //ok存入数据库
-            User user=new User();
+            User user = new User();
             user.setPhoneNum(phoneNum);
             userService.registUserService(user);
-            return  jsonObject;
-        }else {
-            jsonObject.put("result","fail");
+            return jsonObject;
+        } else {
+            jsonObject.put("result", "fail");
             return jsonObject;
         }
 
     }
+
     //随机获取金刚道友
     @RequestMapping(value = "/member")
     @ResponseBody
-    public List<JSONObject>  member(User user){
-        List<JSONObject> jsonObjectList=userService.queryAllUser(user);
+    public List<JSONObject> member(User user) {
+        List<JSONObject> jsonObjectList = userService.queryAllUser(user);
         return jsonObjectList;
     }
 
     //查所有
-    @RequestMapping(value="/allUser")
+    @RequestMapping(value = "/allUser")
     @ResponseBody
-    public ArrayList<Map> queryAllUser(){
-       List<UserMap> list= userService.selectprovince();
+    public ArrayList<Map> queryAllUser() {
+        List<UserMap> list = userService.selectprovince();
         System.out.println(list);
-        Map<String,Object> map=null;
+        Map<String, Object> map = null;
         ArrayList<Map> arrayList = new ArrayList<>();
         for (UserMap userMap : list) {
-           map =new HashMap<String, Object>() ;
-           map.put("name",userMap.getKey());
-           map.put("value",userMap.getValue());
+            map = new HashMap<String, Object>();
+            map.put("name", userMap.getKey());
+            map.put("value", userMap.getValue());
             arrayList.add(map);
         }
-         return  arrayList;
+        return arrayList;
     }
-    @RequestMapping(value="/customerExport")
-    public void customerExport(String title, String fileds , HttpServletResponse response) {
+
+    @RequestMapping(value = "/customerExport")
+    public void customerExport(String title, String fileds, HttpServletResponse response) {
         String[] titles = title.split(",");
         String[] field = fileds.split(",");
         Workbook workbook = new HSSFWorkbook();
@@ -152,6 +160,9 @@ public class UserController {
                         cell.setCellStyle(cellStyle);
                         cell.setCellValue((Date) invoke);
                     } else {
+                        if(invoke == null){
+                            cell.setCellValue("");
+                        }
                         cell.setCellValue(invoke.toString());
                     }
                 } catch (Exception e) {
@@ -161,13 +172,12 @@ public class UserController {
             }
 
         }
-        String name="用户自定义导出文件.xls";
-        String fileName="";
+        String name = "E:\\excel\\用户自定义导出文件.xls";
 
-        try{
-          //  fileName=new String(name.getBytes(charsetName:"utf-8"),charsetName:"ISO8859-1");
-            workbook.write(response.getOutputStream());
-        }catch (Exception e){
+        try {
+            //  fileName=new String(name.getBytes(charsetName:"utf-8"),charsetName:"ISO8859-1");
+            workbook.write(new FileOutputStream(new File(name)));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
